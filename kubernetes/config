@@ -1,0 +1,10 @@
+CA_DIR=../certs
+
+HOSTNAME=$(hostname)
+MY_INTERFACE=enp0s25
+MY_IP=$(ifconfig ${MY_INTERFACE} | grep 'inet addr' | cut -d: -f2 | awk '{print $1}')
+MASTERIP=9.123.156.41
+NODEIP=9.123.156.95
+
+FLANNEL_NET=172.17.0.0/16
+SERVICE_CLUSTER_IP_RANGE=172.16.0.0/16

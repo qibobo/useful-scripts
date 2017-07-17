@@ -1,0 +1,7 @@
+etcd/data*
+etcd/default.etcd
+etcd/*.log
+kubernetes/sh/*.tar.gz
+kubernetes/sh/etcd
+kubernetes/sh/kubeServer
+kubernetes/sh/flannel
