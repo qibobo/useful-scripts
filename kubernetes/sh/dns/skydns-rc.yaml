@@ -101,7 +101,7 @@ spec:
         args:
         - --cache-size=1000
         - --no-resolv
-        - --server=127.0.0.1#10053
+        - --server=172.16.1.254#10053
         - --log-facility=-
         ports:
         - containerPort: 53
@@ -123,9 +123,9 @@ spec:
             # net memory requested by the pod constant.
             memory: 50Mi
         args:
-        - --cmd=nslookup kubernetes.default.svc.cluster.local 127.0.0.1 >/dev/null
+        - --cmd=nslookup kubernetes.default.svc.cluster.local 172.16.1.254 >/dev/null
         - --url=/healthz-dnsmasq
-        - --cmd=nslookup kubernetes.default.svc.cluster.local 127.0.0.1:10053 >/dev/null
+        - --cmd=nslookup kubernetes.default.svc.cluster.local 172.16.1.254:10053 >/dev/null
         - --url=/healthz-kubedns
         - --port=8080
         - --quiet
