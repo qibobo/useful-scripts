@@ -77,7 +77,8 @@ Type=simple
 [Install]
 WantedBy=default.target
 EOF
- 
+
+systemctl daemon-reload 
 systemctl enable concourse_web.service
 systemctl start concourse_web.service
  
