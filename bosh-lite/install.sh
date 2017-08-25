@@ -46,7 +46,7 @@ cd ..
 wget -O stemcell.tgz https://s3.amazonaws.com/bosh-core-stemcells/warden/bosh-stemcell-3431.10-warden-boshlite-ubuntu-trusty-go_agent.tgz
 bosh upload stemcell stemcell.tgz
 cd cf-release/
-bosh create release
+bosh -n create release
 
 bosh -n upload release
 bosh -n deploy
