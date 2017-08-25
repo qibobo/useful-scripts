@@ -32,7 +32,7 @@ bin/add-route
 cd ..
 git clone https://github.com/cloudfoundry/cf-release.git
 cd cf-release
-git checkout v265
+# git checkout v265
 ./scripts/update
 gem install bundler
 cd ..
