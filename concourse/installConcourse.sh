@@ -44,7 +44,7 @@ ExecStart=/usr/local/bin/concourse web  \
         --tsa-host-key /etc/concourse/host_key  \
         --tsa-authorized-keys /etc/concourse/authorized_worker_keys  \
         --external-url http://$EXTERNAL_URL_HOST_NAME:$EXTERNAL_PORT  \
-        --postgres-data-source postgres://$POSTGRES_USER:$POSTGRES_PWD@$POSTGRES_HOST:$POSTGRES_PORT/concourse \
+        --postgres-data-source postgres://$POSTGRES_USER:$POSTGRES_PWD@localhost:5432/concourse \
         --tsa-bind-port $TSA_PORT
 
 User=concourse
