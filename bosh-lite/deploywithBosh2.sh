@@ -49,15 +49,18 @@ bosh2 create-env bosh.yml \
   -v internal_ip=192.168.50.6 \
   -v internal_gw=192.168.50.1 \
   -v internal_cidr=192.168.50.0/24 \
-  -v outbound_network_name=NatNetwork  
+  -v outbound_network_name=NatNetwork \
+  -v admin_password=admin 
 
 ## two way to connect bosh director
 #1 use ca
 bosh2 -e 192.168.50.6 --ca-cert <(bosh2 int ./creds.yml --path /director_ssl/ca) alias-env vbox
 # bosh2 -e 10.121.94.103 --ca-cert <(bosh2 int ./creds.yml --path /director_ssl/ca) alias-env vbox
 #2 use user&pwd,BOSH_CLIENT and BOSH_CLIENT_SECRET must be set to ENV 
+# export BOSH_CLIENT=admin \
+# && export BOSH_CLIENT_SECRET=`bosh2 int ./creds.yml --path /admin_password` 
 export BOSH_CLIENT=admin \
-&& export BOSH_CLIENT_SECRET=`bosh2 int ./creds.yml --path /admin_password` 
+&& export BOSH_CLIENT_SECRET=admin 
 
 # export BOSH_CLIENT=admin \
 # && export BOSH_CLIENT_SECRET=t68sk2haqsmbl7z4bmpn 
