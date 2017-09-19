@@ -65,7 +65,8 @@ export BOSH_CLIENT=admin \
 # export BOSH_CLIENT=admin \
 # && export BOSH_CLIENT_SECRET=t68sk2haqsmbl7z4bmpn 
 # bosh2 -e vbox l
-# sudo route add -net 10.244.0.0/16 gw 192.168.50.6 \
+# ubuntu: sudo route add -net 10.244.0.0/16 gw 192.168.50.6 \
+# mac sudo route add -net 10.244.0.0/16     192.168.50.6
 
 bosh2 -e vbox env
 
@@ -80,11 +81,11 @@ cd cf-deployment
 bosh2 -n -e vbox upload-stemcell https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-trusty-go_agent \
 && bosh2 -n -e vbox update-cloud-config bosh-lite/cloud-config.yml \
 && bosh2 -n -e vbox -d cf deploy  cf-deployment.yml \
-	-o operations/bosh-lite.yml \
-	--vars-store deployment-vars.yml \
-	-v system_domain=bosh-lite.com \
-	-v cf_admin_password=admin \
-    -v uaa_admin_client_secret=admin-secret
+ -o operations/bosh-lite.yml \
+ --vars-store deployment-vars.yml \
+ -v system_domain=bosh-lite.com \
+ -v cf_admin_password=admin \
+ -v uaa_admin_client_secret=admin-secret
 # export CF_ADMIN_PASSWORD=$(bosh2 int ./deployment-vars.yml --path /cf_admin_password)
 # export CF_ADMIN_CLIENT_SECRET=$(bosh2 int ./deployment-vars.yml --path /uaa_admin_client_secret)
 export CF_ADMIN_PASSWORD=admin
