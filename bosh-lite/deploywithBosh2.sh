@@ -94,6 +94,7 @@ export CF_ADMIN_CLIENT_SECRET=admin-secret
 cd ../app-autoscaler-release
 bosh2 create-release
 bosh2 -e vbox upload-release --rebase
+sed -i -e 's/vm_type: default/vm_type: minimal/g' ./templates/app-autoscaler-deployment.yml
 
 bosh2 -n -e vbox -d app-autoscaler \
      deploy templates/app-autoscaler-deployment.yml \
