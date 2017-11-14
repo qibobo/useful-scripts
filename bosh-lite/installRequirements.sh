@@ -5,6 +5,9 @@ echo "===============install gem=================="
 sudo apt-get install -y rubygems build-essential
 echo "===============install bosh_cli=================="
 gem install bosh_cli --no-ri --no-rdoc
+wget https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-2.0.45-linux-amd64
+chmod +x bosh-cli-*
+sudo mv bosh-cli-* /usr/local/bin/bosh2
 echo "===============install virtualbox=================="
 #need virtualbox 5.1+ since previous versions had a network connectivity bug.
 sudo apt remove virtualbox virtualbox-5.0 virtualbox-4.*
