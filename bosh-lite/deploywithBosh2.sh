@@ -6,7 +6,7 @@ sudo apt-get install -y rubygems build-essential
 echo "===============install bosh_cli=================="
 gem install bosh_cli --no-ri --no-rdoc
 echo "===============install bosh_cli_v2=================="
-wget https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-2.0.33-linux-amd64 && \
+wget https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-2.0.45-linux-amd64 && \
 mv bosh-cli-* /usr/local/bin/bosh2 && \
 chmod +x /usr/local/bin/bosh2
 echo "==============fly cli=============================="
@@ -79,22 +79,25 @@ cd ..
 git clone https://github.com/cloudfoundry/cf-deployment.git
 cd cf-deployment
 bosh2 -n -e vbox upload-stemcell https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-trusty-go_agent \
-&& bosh2 -n -e vbox update-cloud-config bosh-lite/cloud-config.yml \
+&& bosh2 -n -e vbox update-cloud-config iaas-support/bosh-lite/cloud-config.yml \
 && bosh2 -n -e vbox -d cf deploy  cf-deployment.yml \
  -o operations/bosh-lite.yml \
  --vars-store deployment-vars.yml \
  -v system_domain=bosh-lite.com \
  -v cf_admin_password=admin \
  -v uaa_admin_client_secret=admin-secret
+
 # export CF_ADMIN_PASSWORD=$(bosh2 int ./deployment-vars.yml --path /cf_admin_password)
 # export CF_ADMIN_CLIENT_SECRET=$(bosh2 int ./deployment-vars.yml --path /uaa_admin_client_secret)
 export CF_ADMIN_PASSWORD=admin
 export CF_ADMIN_CLIENT_SECRET=admin-secret
 ##autoscaler
-cd ../app-autoscaler-release
+cd ..
+git clone https://github.com/cloudfoundry-incubator/app-autoscaler-release.git
+cd app-autoscaler-release
 bosh2 create-release
 bosh2 -e vbox upload-release --rebase
-sed -i -e 's/vm_type: default/vm_type: minimal/g' ./templates/app-autoscaler-deployment.yml
+# sed -i -e 's/vm_type: default/vm_type: minimal/g' ./templates/app-autoscaler-deployment.yml
 
 bosh2 -n -e vbox -d app-autoscaler \
      deploy templates/app-autoscaler-deployment.yml \
