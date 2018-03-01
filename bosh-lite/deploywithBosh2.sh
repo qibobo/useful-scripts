@@ -79,6 +79,7 @@ bosh2 -n -e vbox upload-stemcell https://bosh.io/d/stemcells/bosh-warden-boshlit
 && bosh2 -n -e vbox update-cloud-config iaas-support/bosh-lite/cloud-config.yml \
 && bosh2 -n -e vbox -d cf deploy  cf-deployment.yml \
  -o operations/bosh-lite.yml \
+ -o operations/use-compiled-releases.yml \
  --vars-store deployment-vars.yml \
  -v system_domain=bosh-lite.com \
  -v cf_admin_password=admin \
