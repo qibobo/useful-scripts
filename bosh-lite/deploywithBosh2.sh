@@ -1,18 +1,15 @@
 #!/bin/bash
 echo "===============install git=================="
 sudo apt-get install -y git
-echo "===============install gem=================="
-sudo apt-get install -y rubygems build-essential
-echo "===============install bosh_cli=================="
-gem install bosh_cli --no-ri --no-rdoc
+
 echo "===============install bosh_cli_v2=================="
 wget https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-2.0.45-linux-amd64 && \
 mv bosh-cli-* /usr/local/bin/bosh2 && \
 chmod +x /usr/local/bin/bosh2
-echo "==============fly cli=============================="
-wget https://github.com/concourse/concourse/releases/download/v3.4.1/fly_linux_amd64 \
-&& chmod +x fly* \
-&& mv fly* /usr/local/bin/fly
+# echo "==============fly cli=============================="
+# wget https://github.com/concourse/concourse/releases/download/v3.4.1/fly_linux_amd64 \
+# && chmod +x fly* \
+# && mv fly* /usr/local/bin/fly
 echo "===============install virtualbox=================="
 #need virtualbox 5.1+ since previous versions had a network connectivity bug.
 sudo apt remove virtualbox virtualbox-5.0 virtualbox-4.*
@@ -21,8 +18,8 @@ wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-
 sudo apt update
 sudo apt-get install -y virtualbox-5.1
 
-wget -O vagrant_1.9.7.deb https://releases.hashicorp.com/vagrant/1.9.7/vagrant_1.9.7_x86_64.deb?_ga=2.56676585.2117853575.1501557372-1114066615.1500372577
-dpkg -i vagrant_1.9.7.deb
+# wget -O vagrant_1.9.7.deb https://releases.hashicorp.com/vagrant/1.9.7/vagrant_1.9.7_x86_64.deb?_ga=2.56676585.2117853575.1501557372-1114066615.1500372577
+# dpkg -i vagrant_1.9.7.deb
 
 # wget -O virtualbox-5.1.deb http://download.virtualbox.org/virtualbox/5.1.26/virtualbox-5.1_5.1.26-117224~Ubuntu~xenial_amd64.deb
 # dpkg -i virtualbox-5.1.deb
@@ -30,11 +27,11 @@ dpkg -i vagrant_1.9.7.deb
 ## init bosh-lite
 git clone https://github.com/cloudfoundry/bosh-deployment
 cd bosh-deployment
-cat >external_ip.yml <<-EOF
-- type: replace
-  path: /variables/name=director_ssl/options/alternative_names/-
-  value: 10.121.94.103
-EOF
+# cat >external_ip.yml <<-EOF
+# - type: replace
+#   path: /variables/name=director_ssl/options/alternative_names/-
+#   value: 10.121.94.103
+# EOF
 
 bosh2 create-env bosh.yml \
   --state ./state.json \
@@ -43,7 +40,7 @@ bosh2 create-env bosh.yml \
   -o bosh-lite.yml \
   -o bosh-lite-runc.yml \
   -o jumpbox-user.yml \
-  -o external_ip.yml \
+#   -o external_ip.yml \
   --vars-store ./creds.yml \
   -v director_name="Bosh Lite Director" \
   -v internal_ip=192.168.50.6 \
