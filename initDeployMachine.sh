@@ -22,6 +22,7 @@ echo "==========update repo===========\n" \
 && sudo wget https://dl.google.com/go/go1.10.linux-amd64.tar.gz \
 && tar -C /usr/local -xzf go1.10.linux-amd64.tar.gz \
 && export PATH=$PATH:/usr/local/go/bin \
+&& go version \
 
 && echo "==========install git===========\n" \
 && sudo apt-get install -y git \
@@ -33,20 +34,20 @@ echo "==========update repo===========\n" \
 && gem install bosh_cli --no-ri --no-rdoc \
 
 && echo "===============install bosh_cli_v2==================" \
-&& sudo wget https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-2.0.45-linux-amd64 && \
+&& sudo wget https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-2.0.45-linux-amd64 \
 && sudo mv bosh-cli-* /usr/local/bin/bosh2  \
 && sudo chmod +x /usr/local/bin/bosh2 \
 
 && echo "===============install cf cli=======================" \
-&& sudo wget https://packages.cloudfoundry.org/stable?release=linux64-binary&source=github -O cli_linux.tgz \
+&& sudo wget -O cli_linux.tgz https://packages.cloudfoundry.org/stable?release=linux64-binary&source=github  \
 && sudo tar -xvf cli_linux.tgz \
 && sudo mv cf /usr/local/bin \
 && cf --version \
 
 && echo "===============install ibm cloud cli================" \
-&& sudo wget https://clis.ng.bluemix.net/download/bluemix-cli/latest/linux64 -O bmxcli_linux.tgz \
+&& sudo wget -O bmxcli_linux.tgz https://clis.ng.bluemix.net/download/bluemix-cli/latest/linux64  \
 && sudo tar -xvf bmxcli_linux.tgz \
-&& sudo ./install_bluemix_cli \
+&& sudo ./Bluemix_CLI/install_bluemix_cli \
 
 && echo "===============install kubectl===============" \
 && sudo curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
@@ -55,8 +56,9 @@ echo "==========update repo===========\n" \
 && echo "===============install helm===============" \
 && sudo wget https://kubernetes-helm.storage.googleapis.com/helm-v2.8.1-linux-amd64.tar.gz \
 && sudo tar -xvf helm-v2.8.1-linux-amd64.tar.gz \
-&& sudo mv helm /usr/local/bin/helm \
-
+&& sudo chmod +x ./linux-amd64/helm \
+&& sudo mv ./linux-amd64/helm /usr/local/bin/helm \
+&& helm version \
 && echo "===============install fissile===============" \
 && export GOPATH=$PWD \
 && go get -d github.com/SUSE/fissile \
