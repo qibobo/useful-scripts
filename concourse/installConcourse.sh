@@ -4,13 +4,8 @@ EXTERNAL_URL_HOST_NAME="$1"
 EXTERNAL_PORT="$2"
 ADMIN_USERNAME="$3"
 ADMIN_PASSWORD="$4"
-TSA_PORT="$5"
-POSTGRES_USER="$6"
-POSTGRES_PWD="$7"
-POSTGRES_HOST="$8"
-POSTGRES_PORT="$9"
  
-CONCOURSE_VERSION=${CONCOURSE_VERSION:-v3.4.0}
+CONCOURSE_VERSION=${CONCOURSE_VERSION:-v3.9.2}
  
 apt-get update
 apt-get install -y postgresql postgresql-contrib
@@ -44,8 +39,8 @@ ExecStart=/usr/local/bin/concourse web  \
 --tsa-host-key /etc/concourse/host_key  \
 --tsa-authorized-keys /etc/concourse/authorized_worker_keys  \
 --external-url http://$EXTERNAL_URL_HOST_NAME:$EXTERNAL_PORT  \
---postgres-data-source postgres://$POSTGRES_USER:$POSTGRES_PWD@localhost:5432/concourse \
---tsa-bind-port $TSA_PORT
+--postgres-data-source postgres://postgres@localhost:5432/concourse \
+--tsa-bind-port 3333
 
 User=concourse
 Group=concourse
@@ -67,7 +62,7 @@ ExecStart=/usr/local/bin/concourse worker \
 --tsa-host localhost \
 --tsa-public-key /etc/concourse/host_key.pub \
 --tsa-worker-private-key /etc/concourse/worker_key \
---tsa-port $TSA_PORT
+--tsa-port 3333
 
 User=root
 Group=root
