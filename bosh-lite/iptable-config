@@ -1,4 +1,5 @@
 vim /etc/sysctl.conf
+ net.ipv4.ip_forward = 0
 sysctl -p /etc/sysctl.conf
 iptables -A FORWARD -i bond0 -o vboxnet0 -j ACCEPT \
 && iptables -A FORWARD -o bond0 -i vboxnet0 -j ACCEPT \
@@ -16,9 +17,12 @@ iptables -A FORWARD -i bond0 -o vboxnet1 -j ACCEPT \
 && iptables -t nat -A POSTROUTING -o vboxnet0 -j MASQUERADE \
 && iptables -t nat -A POSTROUTING -o vboxnet1 -j MASQUERADE \
 && iptables -t nat -A PREROUTING -p tcp -i bond0 -d 10.121.94.103 --dport 443 -j DNAT --to 10.244.0.34:443 \
+&& iptables -t nat -A PREROUTING -p tcp -i bond0 -d 10.121.94.103 --dport 8888 -j DNAT --to 10.245.0.34:8888 \
 && iptables -I INPUT -p tcp --dport 25555 -j ACCEPT && sudo iptables -I OUTPUT -p tcp --dport 25555 -j ACCEPT \
 && iptables -I INPUT -p tcp --dport 26666 -j ACCEPT && sudo iptables -I OUTPUT -p tcp --dport 26666 -j ACCEPT \
 && iptables -I INPUT -p tcp --dport 443 -j ACCEPT && sudo iptables -I OUTPUT -p tcp --dport 443 -j ACCEPT \
+&& iptables -I INPUT -p tcp --dport 8888 -j ACCEPT && sudo iptables -I OUTPUT -p tcp --dport 8888 -j ACCEPT \
+&& iptables -I INPUT -p udp --dport 53 -j ACCEPT && sudo iptables -I OUTPUT -p udp --dport 53 -j ACCEPT \
 && iptables -t nat -A OUTPUT -p tcp -d 10.121.94.103 --dport 25555 -j DNAT --to-destination 192.168.50.6:25555 \
 && iptables -t nat -A OUTPUT -p tcp -d 10.121.94.103 --dport 26666 -j DNAT --to-destination 192.168.51.6:25555
 

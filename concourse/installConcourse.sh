@@ -13,7 +13,7 @@ apt-get install -y postgresql postgresql-contrib
 sudo -u postgres createuser -s concourse
 sudo -u postgres createdb --owner=concourse concourse
  
-curl -L -f -o /usr/local/bin/concourse https://github.com/concourse/concourse/releases/download/$CONCOURSE_VERSION/concourse_linux_amd64
+curl -L -f -o /usr/local/bin/concourse https://github.com/concourse/concourse/releases/download/v3.9.2/concourse_linux_amd64
 chmod +x /usr/local/bin/concourse
  
 mkdir -p /etc/concourse
@@ -38,9 +38,8 @@ ExecStart=/usr/local/bin/concourse web  \
 --session-signing-key /etc/concourse/session_signing_key  \
 --tsa-host-key /etc/concourse/host_key  \
 --tsa-authorized-keys /etc/concourse/authorized_worker_keys  \
---external-url http://$EXTERNAL_URL_HOST_NAME:$EXTERNAL_PORT  \
---postgres-data-source postgres://postgres@localhost:5432/concourse \
---tsa-bind-port 3333
+--external-url http://127.0.0.1:8080  \
+--postgres-data-source postgres://postgres:123@localhost:5432/concourse \
 
 User=concourse
 Group=concourse
@@ -62,7 +61,6 @@ ExecStart=/usr/local/bin/concourse worker \
 --tsa-host localhost \
 --tsa-public-key /etc/concourse/host_key.pub \
 --tsa-worker-private-key /etc/concourse/worker_key \
---tsa-port 3333
 
 User=root
 Group=root
@@ -75,7 +73,7 @@ EOF
 
 systemctl daemon-reload 
 systemctl enable concourse_web.service
-systemctl start concourse_web.service
+systemctl restart concourse_web.service
  
 systemctl enable concourse_worker.service
-systemctl start concourse_worker.service
+systemctl restart concourse_worker.service
