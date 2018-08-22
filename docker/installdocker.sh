@@ -22,3 +22,9 @@ echo "===========remove old docker version" \
 && sudo mv ./docker-compose  /usr/local/bin/docker-compose \
 && sudo chmod +x /usr/local/bin/docker-compose \
 && sudo docker-compose --version
+
+
+# uncommented the lines in /etc/login.defs
+
+# SYS_GID_MIN 100
+# SYS_GID_MAX 999
