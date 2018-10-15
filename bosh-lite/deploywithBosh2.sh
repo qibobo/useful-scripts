@@ -70,22 +70,22 @@ bosh2 create-env bosh.yml \
 
 
 #delete the bosh lite
-# bosh2 delete-env bosh.yml \
-#   --state ./state.json \
-#   -o virtualbox/cpi.yml \
-#   -o virtualbox/outbound-network.yml \
-#   -o bosh-lite.yml \
-#   -o bosh-lite-runc.yml \
-#   -o uaa.yml \
-#   -o credhub.yml \
-#   -o jumpbox-user.yml \
-#   --vars-store ./creds.yml \
-#   -v director_name=bosh-lite \
-#   -v internal_ip=192.168.50.6 \
-#   -v internal_gw=192.168.50.1 \
-#   -v internal_cidr=192.168.50.0/24 \
-#   -v outbound_network_name=NatNetwork \
-#   -v admin_password=admin
+bosh2 delete-env bosh.yml \
+  --state ./state.json \
+  -o virtualbox/cpi.yml \
+  -o virtualbox/outbound-network.yml \
+  -o bosh-lite.yml \
+  -o bosh-lite-runc.yml \
+  -o uaa.yml \
+  -o credhub.yml \
+  -o jumpbox-user.yml \
+  --vars-store ./creds.yml \
+  -v director_name=bosh-lite \
+  -v internal_ip=192.168.50.6 \
+  -v internal_gw=192.168.50.1 \
+  -v internal_cidr=192.168.50.0/24 \
+  -v outbound_network_name=NatNetwork \
+  -v admin_password=admin
 # external ip
  # bosh2 create-env bosh.yml \
  #  --state ./state.json \
@@ -111,7 +111,7 @@ bosh2 -n -e vbox update-runtime-config runtime-configs/dns.yml --name dns
 bosh2 -e 192.168.50.6 --ca-cert <(bosh2 int /Users/qiyang/dev/openjavaspace/bosh-lite/bosh-deployment/creds.yml --path /director_ssl/ca) alias-env vbox
 export BOSH_ENVIRONMENT=vbox
 export BOSH_CLIENT=admin 
-export BOSH_CLIENT_SECRET=admin 
+export BOSH_CLIENT_SECRET=2NtxjsoE 
 #ldesk
 bosh2 -e 192.168.50.6 --ca-cert <(bosh2 int /home/qiye/workspace/bosh-deployment/creds.yml --path /director_ssl/ca) alias-env vbox
 export BOSH_ENVIRONMENT=vbox
@@ -140,7 +140,7 @@ bosh2 -e vbox env
 cd ..
 git clone https://github.com/cloudfoundry/cf-deployment.git
 cd cf-deployment
-bosh2 -n -e vbox upload-stemcell https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-trusty-go_agent \
+bosh2 -n -e vbox upload-stemcell https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-xenial-go_agent?v=97.19 \
 && bosh2 -n -e vbox update-cloud-config iaas-support/bosh-lite/cloud-config.yml \
 && bosh2 -n -e vbox -d cf deploy  cf-deployment.yml \
  -o operations/bosh-lite.yml \
@@ -150,11 +150,46 @@ bosh2 -n -e vbox upload-stemcell https://bosh.io/d/stemcells/bosh-warden-boshlit
  -v cf_admin_password=admin \
  -v uaa_admin_client_secret=admin-secret
 
- bosh2 -n -e vbox upload-stemcell https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-trusty-go_agent?v=3541.12 \
+ bosh2 -n -e vbox upload-stemcell https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-trusty-go_agent?v=3586.42 \
 && bosh2 -n -e vbox update-cloud-config iaas-support/bosh-lite/cloud-config.yml \
 && bosh2 -n -e vbox -d cf deploy  cf-deployment.yml \
  -o operations/bosh-lite.yml \
  -o operations/use-local-release.yml \
+ --vars-store deployment-vars.yml \
+ -v system_domain=bosh-lite.com \
+ -v cf_admin_password=admin \
+ -v uaa_admin_client_secret=admin-secret
+
+ #cf with autoscaler
+ bosh2 -n -d cf deploy  cf-deployment.yml  \
+-o operations/bosh-lite.yml  \
+-o operations/use-compiled-releases.yml  \
+-o operations/use-postgres.yml \
+-o operations/app-autoscaler.yml  \
+--vars-store deployment-vars.yml  \
+-v system_domain=bosh-lite.com  \
+-v cf_admin_password=admin  \
+-v uaa_admin_client_secret=admin-secret \
+-v skip_ssl_validation=true
+
+bosh2 -n -d cf interpolate  cf-deployment.yml  \
+-o operations/bosh-lite.yml  \
+-o operations/use-compiled-releases.yml  \
+-o operations/use-postgres.yml \
+-o operations/app-autoscaler.yml  \
+--vars-store deployment-vars.yml  \
+-v system_domain=bosh-lite.com  \
+-v cf_admin_password=admin  \
+-v uaa_admin_client_secret=admin-secret \
+-v skip_ssl_validation=true
+
+
+
+ #app-autoscaler
+ bosh2 -n -e vbox -d cf deploy  cf-deployment.yml \
+ -o operations/bosh-lite.yml \
+ -o operations/use-compiled-releases.yml \
+ -o operations/app-autoscaler.yml \
  --vars-store deployment-vars.yml \
  -v system_domain=bosh-lite.com \
  -v cf_admin_password=admin \
@@ -188,6 +223,26 @@ bosh2 -e vbox -n -d app-autoscaler \
      -v system_domain=bosh-lite.com \
      -v cf_admin_password=admin \
      -v skip_ssl_validation=true
+     
+bosh2 -e vbox -n -d app-autoscaler \
+     interpolate templates/app-autoscaler-deployment.yml \
+     --vars-store=bosh-lite/deployments/vars/autoscaler-deployment-vars.yml \
+     -o example/operation/bosh-dns.yml \
+     -v system_domain=bosh-lite.com \
+     -v cf_admin_password=admin \
+     -v service_offering_enabled=false \
+     -v skip_ssl_validation=true
+
+# use fewer deployment
+ bosh2 -e vbox -n -d app-autoscaler \
+     deploy templates/app-autoscaler-deployment-fewer.yml \
+     --vars-store=bosh-lite/deployments/vars/autoscaler-deployment-vars.yml \
+     -o example/operation/bosh-dns-fewer.yml \
+     -v system_domain=bosh-lite.com \
+     -v cf_admin_password=admin \
+     -v service_offering_enabled=false \
+     -v skip_ssl_validation=true
+
 # use client credential ops file
 bosh2 -n -e vbox -d app-autoscaler \
      deploy templates/app-autoscaler-deployment.yml \
@@ -210,18 +265,19 @@ bosh2 -n -e vbox -d app-autoscaler \
      -v database_password=postgres \
      -v database_name=autoscaler \
      -o example/operation/external-db.yml
-# use fewer deployment
-&& bosh2 -e vbox -n -d app-autoscaler \
-     deploy templates/app-autoscaler-deployment-fewer.yml \
-     --vars-store=bosh-lite/deployments/vars/autoscaler-deployment-vars.yml \
-     -v system_domain=bosh-lite.com \
-     -v cf_admin_password=admin \
-     -v skip_ssl_validation=true
+
 
      
 
 cf api https://api.bosh-lite.com --skip-ssl-validation
 cf auth admin admin
+
+bosh2 -e vbox -d scalerui \
+     deploy -n templates/scalerui-deployment.yml \
+     -v system_domain=bosh-lite.com \
+     -v scalerui_host=scalerui \
+     -v cf_client_scope=openid,cloud_controller.read,cloud_controller.write,cloud_controller.admin \
+     -v console_urls=https://console.bosh-lite.com
 
 
 
