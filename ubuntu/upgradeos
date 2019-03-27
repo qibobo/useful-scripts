@@ -1,0 +1,13 @@
+#upgrade ubuntu os
+sudo apt update && sudo apt dist-upgrade && sudo apt autoremove
+sudo apt-get install update-manager-core
+sudo nano /etc/update-manager/release-upgrades
+###Confirm that the Prompt is equal lts
+sudo do-release-upgrade -d
+
+
+tips:
+
+#1 dl.yarnpkg.com is not signed
+
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - 
